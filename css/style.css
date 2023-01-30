@@ -23,7 +23,7 @@ h2 {
 
 .container p {
     margin-bottom: 2rem;
-    color: #666E7B;
+    color: #9CA3A2;
 }
 
 ul {
@@ -34,6 +34,10 @@ ul {
 
 li a {
     color: aqua;
+}
+
+li a:hover {
+    color: #00cccc;
 }
 
 .links {
@@ -49,6 +53,10 @@ li a {
     border: 2px solid #475569;
     border-radius: 7px;
     background-color: #1E293B;
+}
+
+.link-box:hover {
+    background-color: #353e4f;
 }
 
 .link-box a {
