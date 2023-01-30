@@ -66,3 +66,17 @@ li a:hover {
     color: #FFFFFF;
     text-decoration: none;
 }
+
+/* MEDIA QUERIES */
+
+@media (max-width: 600px) {
+    .links {
+        width: 85%;
+    }
+  }
+
+@media (max-width: 1100px) {
+    .links {
+        width: 65%;
+    }
+  }
