@@ -4,6 +4,10 @@
 [build]
   publish = "public"
 
+# The project was still set to Node 16, which functions no longer support
+[build.environment]
+  NODE_VERSION = "22"
+
 [functions]
   directory = "netlify/functions"
 
@@ -13,6 +17,9 @@
     # Only this site, Google Fonts and the /api/twitch-live check may load.
     # Hotlinking images from elsewhere (e.g. YouTube thumbnails) needs img-src updated.
     Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'"
+    # No includeSubDomains: drive, photos and nas.toppirl.com are served from the
+    # home NAS, and forcing HTTPS on them from here would break any without a certificate.
+    Strict-Transport-Security = "max-age=31536000"
     Referrer-Policy = "strict-origin-when-cross-origin"
     X-Content-Type-Options = "nosniff"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
