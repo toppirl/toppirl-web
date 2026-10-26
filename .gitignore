@@ -1,0 +1,11 @@
+# Local secrets for `netlify dev` (Twitch client ID and secret). Never commit these.
+.env
+.env.*
+
+# Netlify CLI and Node
+.netlify/
+node_modules/
+
+# OS clutter
+.DS_Store
+Thumbs.db
