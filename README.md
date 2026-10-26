@@ -20,7 +20,7 @@ netlify.toml             publish folder and security headers
 
 ## Editing the page
 
-- **Link cards:** in `public/index.html`, copy one of the `<li>` blocks inside `<ul class="links">`. The thumbnail is either an `<img class="link-thumb">` (a square image, 112px or larger, saved in `public/img/`) or an icon tile.
+- **Link cards:** in `public/index.html`, paste one of the two templates from the comment above `<ul class="links">` into the list, after the live card. The thumbnail is either an `<img class="link-thumb">` (a square image, 112px or larger, saved in `public/img/`) or an icon tile.
 - **Avatar:** save a square photo (192px or larger) as `public/img/avatar.jpg` and swap the `JT` placeholder for the `<img>` line in the comment above it.
 - **Social icons:** each one is an inline SVG inside `<ul class="socials">`.
 - **Colors:** change the variables in the `:root` block at the top of `public/css/style.css`.
