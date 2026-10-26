@@ -12,6 +12,9 @@
     --accent: #22d3ee;
     --accent-hover: #67e8f9;
     --live: #ef4444;
+    --live-surface: #2a1a22;
+    --live-surface-hover: #35202b;
+    --live-text: #fca5a5;
     --radius: 12px;
     --page-width: 32rem;
 }
@@ -177,6 +180,61 @@ h1 {
     transform: translateX(2px);
 }
 
+/* LIVE ON TWITCH */
+
+.link-card-live,
+.link-card-live:hover {
+    border-color: var(--live);
+}
+
+.link-card-live {
+    background-color: var(--live-surface);
+}
+
+.link-card-live:hover {
+    background-color: var(--live-surface-hover);
+}
+
+.link-card-live .link-thumb {
+    background-color: var(--live);
+    color: #ffffff;
+}
+
+.link-card-live .link-arrow,
+.link-card-live:hover .link-arrow {
+    color: var(--live-text);
+}
+
+/* Stream titles can run long: keep the card to two lines of detail */
+.link-card-live .link-subtitle {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+.live-dot {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-right: 0.5rem;
+    border-radius: 50%;
+    background-color: var(--live);
+    vertical-align: 0.1em;
+    animation: live-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+    50% {
+        opacity: 0.35;
+    }
+}
+
+.is-live .avatar {
+    outline: 3px solid var(--live);
+    outline-offset: 3px;
+}
+
 /* FOCUS AND MOTION */
 
 a:focus-visible {
@@ -187,6 +245,7 @@ a:focus-visible {
 @media (prefers-reduced-motion: reduce) {
     * {
         transition: none !important;
+        animation: none !important;
     }
 
     .link-card:hover,
