@@ -4,18 +4,21 @@ I figured instead of using the generic link websites, I would make my own person
 
 ## How It's Made:
 
-HTML / CSS, with no framework and no build step. One small Netlify function checks Twitch so the page can show when I'm live.
+HTML / CSS, with no framework and no build step. Two small Netlify functions: one checks Twitch so the page can show when I'm live, the other serves the gear list.
 
 ```
 public/                  everything that gets published
   index.html             the page: profile, social icons, link cards, retro grid
+  gear.html              /gear: the gear I use, grouped by category, with an affiliate disclosure
   404.html               shown for any missing URL
   css/style.css          all styles, including the grid; base colors are variables at the top
   js/live.js             checks Twitch every minute and switches the page into live mode
                          (red grid, LIVE badge, uptime line, Watch on Twitch card)
+  js/gear.js             loads /api/gear and draws the gear page's cards (or its empty or error message)
   img/                   favicons, apple-touch-icon, og-image (link previews)
 netlify/functions/
   twitch-live.mjs        /api/twitch-live: asks Twitch if I'm streaming
+  gear.mjs               /api/gear: the gear list (sample data for now)
 netlify.toml             publish folder and security headers
 ```
 
@@ -24,9 +27,10 @@ netlify.toml             publish folder and security headers
 - **Link cards:** in `public/index.html`, paste one of the two templates from the comment above the link list into `<ul class="links">`, after the live card. The thumbnail is either an `<img class="link-thumb">` (a square image, 112px or larger, saved in `public/img/`) or an icon tile.
 - **Avatar:** save a square photo (192px or larger) as `public/img/avatar.jpg` and swap the `JT` placeholder for the `<img>` line in the comment above it.
 - **Social icons:** each one is an inline SVG inside `<ul class="socials">`.
+- **Gear:** for now the list is the sample data at the top of `netlify/functions/gear.mjs`. Array order is display order, and `hidden: true` keeps an item off the page.
 - **Colors:** change the base colors (`--bg`, `--surface`, `--accent`, `--live`, …) at the top of `public/css/style.css`. The card, glow and grid colors below them are mixed from those, so they follow automatically.
 
-To preview, open `public/index.html` in a browser. Everything works except the live check, which needs Netlify (the page just stays in its offline look). With Node installed, `npx netlify-cli dev` runs the function locally too.
+To preview, open `public/index.html` in a browser. Everything works except the live check, which needs Netlify (the page just stays in its offline look). With Node installed, `npx netlify-cli dev` runs the functions locally too; the gear page needs it, since its list comes from `/api/gear`.
 
 ## Twitch live indicator
 
