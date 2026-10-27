@@ -29,18 +29,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
-    <script type="module" src="js/grid.js"></script>
     <script type="module" src="js/live.js"></script>
 </head>
 
 <body>
-    <!-- Retro grid floor; js/grid.js puts its horizon just above the link cards -->
-    <div class="bg-grid" aria-hidden="true">
-        <div class="bg-grid-floor">
-            <div class="bg-grid-plane"></div>
-        </div>
-    </div>
-
     <main class="page">
         <header class="profile">
             <div class="avatar-wrap">
@@ -49,7 +41,8 @@
                 <!-- Swap for <img class="avatar" src="img/avatar.jpg" alt="" width="96" height="96"> once there's a photo -->
                 <div class="avatar" aria-hidden="true">JT</div>
                 <span class="live-badge" aria-hidden="true"><span class="live-badge-dot"></span>LIVE</span>
-                <a class="avatar-live-link" href="https://twitch.tv/toppirl" target="_blank" rel="noopener noreferrer" aria-label="Live on Twitch now" data-live hidden></a>
+                <!-- Pointer shortcut only: keyboard and screen readers use the Watch on Twitch card -->
+                <a class="avatar-live-link" href="https://twitch.tv/toppirl" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true" data-live hidden></a>
             </div>
             <h1>Jordan Topp</h1>
             <p class="handle">@toppirL</p>
@@ -143,25 +136,34 @@
                 </a>
             </li>
         -->
-        <ul class="links" aria-label="Links">
-            <!-- Shown by js/live.js while streaming (see netlify/functions/twitch-live.mjs) -->
-            <li data-live hidden>
-                <a class="link-card link-card-live" href="https://twitch.tv/toppirl" target="_blank" rel="noopener noreferrer">
-                    <span class="link-thumb" aria-hidden="true">
-                        <svg class="icon" viewBox="0 0 24 24" focusable="false">
-                            <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0 1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z" />
+        <!-- The floor fills the rest of the page; the grid's horizon sits one card-gap above the cards -->
+        <div class="floor">
+            <div class="bg-grid" aria-hidden="true">
+                <div class="bg-grid-floor">
+                    <div class="bg-grid-plane"></div>
+                </div>
+            </div>
+
+            <ul class="links" aria-label="Links">
+                <!-- Shown by js/live.js while streaming (see netlify/functions/twitch-live.mjs) -->
+                <li data-live hidden>
+                    <a class="link-card link-card-live" href="https://twitch.tv/toppirl" target="_blank" rel="noopener noreferrer">
+                        <span class="link-thumb" aria-hidden="true">
+                            <svg class="icon" viewBox="0 0 24 24" focusable="false">
+                                <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0 1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z" />
+                            </svg>
+                        </span>
+                        <span class="link-text">
+                            <span class="link-title">Watch on Twitch</span>
+                            <span class="link-subtitle" data-live-detail>Come hang out</span>
+                        </span>
+                        <svg class="link-arrow icon-line" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="m9 18 6-6-6-6" />
                         </svg>
-                    </span>
-                    <span class="link-text">
-                        <span class="link-title">Watch on Twitch</span>
-                        <span class="link-subtitle" data-live-detail>Come hang out</span>
-                    </span>
-                    <svg class="link-arrow icon-line" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                        <path d="m9 18 6-6-6-6" />
-                    </svg>
-                </a>
-            </li>
-        </ul>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </main>
 </body>
 

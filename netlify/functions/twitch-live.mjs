@@ -1,4 +1,4 @@
-// Reports whether TWITCH_LOGIN is streaming, for the "Live now" card.
+// Reports whether TWITCH_LOGIN is streaming, for the page's live mode (js/live.js).
 // Served at /api/twitch-live. Needs TWITCH_CLIENT_ID and TWITCH_CLIENT_SECRET
 // (from a Twitch app at dev.twitch.tv) set as Netlify environment variables.
 

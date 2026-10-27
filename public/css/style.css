@@ -12,36 +12,40 @@
     --live: #ef4444;
     --live-text: #fca5a5;
 
+    /* Everything below is mixed from the colors above, so changing one updates them all */
+
     /* Cards sit on the grid: slightly see-through, with cyan-tinted edges */
-    --card-surface: rgba(30, 41, 59, 0.72);
-    --card-surface-hover: rgba(39, 52, 73, 0.85);
-    --card-border: rgba(34, 211, 238, 0.2);
-    --card-border-hover: rgba(34, 211, 238, 0.55);
-    --card-glow: rgba(34, 211, 238, 0.18);
-    --thumb-tile: rgba(34, 211, 238, 0.1);
-    --live-surface: rgba(42, 26, 34, 0.82);
-    --live-surface-hover: rgba(53, 32, 43, 0.9);
-    --live-glow: rgba(239, 68, 68, 0.28);
+    --card-surface: color-mix(in srgb, var(--surface) 85%, transparent);
+    --card-surface-hover: color-mix(in srgb, var(--surface) 92%, var(--accent));
+    --card-border: color-mix(in srgb, var(--accent) 20%, transparent);
+    --card-border-hover: color-mix(in srgb, var(--accent) 55%, transparent);
+    --card-glow: color-mix(in srgb, var(--accent) 18%, transparent);
+    --thumb-tile: color-mix(in srgb, var(--accent) 10%, transparent);
+    --live-surface: color-mix(in srgb, var(--live) 12%, var(--bg));
+    --live-surface-hover: color-mix(in srgb, var(--live) 18%, var(--bg));
+    --live-glow: color-mix(in srgb, var(--live) 28%, transparent);
 
     /* Retro grid */
-    --grid-line: rgba(34, 211, 238, 0.22);
-    --grid-horizon: rgba(34, 211, 238, 0.45);
+    --grid-line: color-mix(in srgb, var(--accent) 22%, transparent);
+    --grid-horizon: color-mix(in srgb, var(--accent) 45%, transparent);
     --grid-speed: 6s;
 
+    --card-gap: 0.75rem;
     --radius: 12px;
     --page-width: 32rem;
+    --page-padding-bottom: 3rem;
 }
 
 /* While streaming, the grid turns red and rolls faster */
 .is-live {
-    --grid-line: rgba(239, 68, 68, 0.42);
-    --grid-horizon: rgba(239, 68, 68, 0.7);
+    --grid-line: color-mix(in srgb, var(--live) 42%, transparent);
+    --grid-horizon: color-mix(in srgb, var(--live) 70%, transparent);
     --grid-speed: 2.5s;
 }
 
 body {
-    position: relative;
-    min-height: 100vh;
+    /* The full-bleed grid is wider than the page; never let it cause sideways scrolling */
+    overflow-x: clip;
     font-family: 'Poppins', system-ui, sans-serif;
     line-height: 1.5;
     text-align: center;
@@ -49,25 +53,37 @@ body {
     color: var(--text);
 }
 
-/* One centered column: its max width does the work the old breakpoints did */
+/* One centered column: its max width does the work the old breakpoints did.
+   It fills the visible screen (svh ignores mobile toolbars) so the floor reaches the bottom. */
 .page {
-    position: relative;
-    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
     max-width: var(--page-width);
+    min-height: 100vh;
+    min-height: 100svh;
     margin: 0 auto;
-    padding: clamp(3rem, 12vh, 8rem) 1rem 3rem;
+    padding: clamp(3rem, 12vh, 8rem) 1rem var(--page-padding-bottom);
 }
 
 /* RETRO GRID BACKGROUND */
 
+/* Everything from the link cards down; the grid hangs off its top edge */
+.floor {
+    position: relative;
+    flex: 1;
+    margin-top: 2rem;
+}
+
 .bg-grid {
     position: absolute;
-    top: var(--horizon, 60vh);
-    right: 0;
-    bottom: 0;
-    left: 0;
+    top: calc(-1 * var(--card-gap));
+    bottom: calc(-1 * var(--page-padding-bottom));
+    left: 50%;
+    width: 100vw;
     overflow: hidden;
     pointer-events: none;
+    transform: translateX(-50%);
 }
 
 /* The horizon line */
@@ -105,11 +121,19 @@ body {
         linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
     background-size: 44px 44px;
     animation: grid-roll var(--grid-speed) linear infinite;
+    will-change: transform;
 }
 
+/* Slides the tilted plane one tile toward the viewer and loops. Only transform changes,
+   so the compositor moves it without repainting. The tile that starts behind the
+   horizon is clipped by .bg-grid. */
 @keyframes grid-roll {
+    from {
+        transform: rotateX(72deg) translateY(-44px);
+    }
+
     to {
-        background-position: 0 44px;
+        transform: rotateX(72deg) translateY(0);
     }
 }
 
@@ -199,10 +223,10 @@ h1 {
 /* LINK CARDS */
 
 .links {
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    margin-top: 2rem;
+    gap: var(--card-gap);
     text-align: left;
 }
 
@@ -215,8 +239,6 @@ h1 {
     border: 1px solid var(--card-border);
     border-radius: var(--radius);
     background-color: var(--card-surface);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
     color: var(--text);
     text-decoration: none;
     transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;

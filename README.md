@@ -8,10 +8,11 @@ HTML / CSS, with no framework and no build step. One small Netlify function chec
 
 ```
 public/                  everything that gets published
-  index.html             the page: profile, social icons, link cards
+  index.html             the page: profile, social icons, link cards, retro grid
   404.html               shown for any missing URL
-  css/style.css          all styles; colors are variables at the top
-  js/live.js             reveals the "Live now" card while streaming
+  css/style.css          all styles, including the grid; base colors are variables at the top
+  js/live.js             checks Twitch every minute and switches the page into live mode
+                         (red grid, LIVE badge, uptime line, Watch on Twitch card)
   img/                   favicons, apple-touch-icon, og-image (link previews)
 netlify/functions/
   twitch-live.mjs        /api/twitch-live: asks Twitch if I'm streaming
@@ -20,12 +21,12 @@ netlify.toml             publish folder and security headers
 
 ## Editing the page
 
-- **Link cards:** in `public/index.html`, paste one of the two templates from the comment above `<ul class="links">` into the list, after the live card. The thumbnail is either an `<img class="link-thumb">` (a square image, 112px or larger, saved in `public/img/`) or an icon tile.
+- **Link cards:** in `public/index.html`, paste one of the two templates from the comment above the link list into `<ul class="links">`, after the live card. The thumbnail is either an `<img class="link-thumb">` (a square image, 112px or larger, saved in `public/img/`) or an icon tile.
 - **Avatar:** save a square photo (192px or larger) as `public/img/avatar.jpg` and swap the `JT` placeholder for the `<img>` line in the comment above it.
 - **Social icons:** each one is an inline SVG inside `<ul class="socials">`.
-- **Colors:** change the variables in the `:root` block at the top of `public/css/style.css`.
+- **Colors:** change the base colors (`--bg`, `--surface`, `--accent`, `--live`, …) at the top of `public/css/style.css`. The card, glow and grid colors below them are mixed from those, so they follow automatically.
 
-To preview, open `public/index.html` in a browser. Everything works except the live check, which needs Netlify (the card just stays hidden). With Node installed, `npx netlify-cli dev` runs the function locally too.
+To preview, open `public/index.html` in a browser. Everything works except the live check, which needs Netlify (the page just stays in its offline look). With Node installed, `npx netlify-cli dev` runs the function locally too.
 
 ## Twitch live indicator
 
