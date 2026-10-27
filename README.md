@@ -4,7 +4,7 @@ I figured instead of using the generic link websites, I would make my own person
 
 ## How It's Made:
 
-HTML / CSS, with no framework and no build step. Two small Netlify functions: one checks Twitch so the page can show when I'm live, the other serves the gear list.
+HTML / CSS, with no framework and no build step. A few small Netlify functions: one checks Twitch so the page can show when I'm live, the rest serve the gear list and let me edit it from `/admin`.
 
 ```
 public/                  everything that gets published
@@ -15,11 +15,18 @@ public/                  everything that gets published
   js/live.js             checks Twitch every minute and switches the page into live mode
                          (red grid, LIVE badge, uptime line, Watch on Twitch card)
   js/gear.js             loads /api/gear and draws the gear page's cards (or its empty or error message)
+  admin/index.html       /admin: sign-in, not linked from the site (with js/admin.js, css/admin.css)
   img/                   favicons, apple-touch-icon, og-image (link previews)
 netlify/functions/
   twitch-live.mjs        /api/twitch-live: asks Twitch if I'm streaming
-  gear.mjs               /api/gear: the gear list (sample data for now)
+  gear.mjs               /api/gear: the public gear list, drafts left out
+  gear-image.mjs         /api/gear/img/<id>: gear photos
+  admin-*.mjs            /api/admin/*: sign-in and sign-out, and editing the gear list and photos
+netlify/lib/
+  auth.mjs               admin sign-in, shared by the admin functions
+  gear-store.mjs         the gear list and photos in Netlify Blobs, and the rules a save must pass
 netlify.toml             publish folder and security headers
+package.json             the functions' npm packages, pinned (package-lock.json pins the rest)
 ```
 
 ## Editing the page
@@ -27,10 +34,10 @@ netlify.toml             publish folder and security headers
 - **Link cards:** in `public/index.html`, paste one of the two templates from the comment above the link list into `<ul class="links">`, after the live card. The thumbnail is either an `<img class="link-thumb">` (a square image, 112px or larger, saved in `public/img/`) or an icon tile.
 - **Avatar:** save a square photo (192px or larger) as `public/img/avatar.jpg` and swap the `JT` placeholder for the `<img>` line in the comment above it.
 - **Social icons:** each one is an inline SVG inside `<ul class="socials">`.
-- **Gear:** for now the list is the sample data at the top of `netlify/functions/gear.mjs`. Array order is display order, and `hidden: true` keeps an item off the page.
+- **Gear:** edited from `/admin` and saved to Netlify Blobs, not the repo. See [Managing gear](#managing-gear).
 - **Colors:** change the base colors (`--bg`, `--surface`, `--accent`, `--live`, …) at the top of `public/css/style.css`. The card, glow and grid colors below them are mixed from those, so they follow automatically.
 
-To preview, open `public/index.html` in a browser. Everything works except the live check, which needs Netlify (the page just stays in its offline look). With Node installed, `npx netlify-cli dev` runs the functions locally too; the gear page needs it, since its list comes from `/api/gear`.
+To preview, open `public/index.html` in a browser. Everything works except the live check, which needs Netlify (the page just stays in its offline look). With Node installed, `npx netlify-cli@27.12.1 dev` runs the functions locally too, at http://localhost:8888; the gear page and `/admin` need it.
 
 ## Twitch live indicator
 
@@ -40,6 +47,42 @@ To preview, open `public/index.html` in a browser. Everything works except the l
 4. Redeploy, then open `https://toppirl.com/api/twitch-live`. It should say `{"live":false}` while offline.
 
 Never put the secret in the repo. For `netlify dev`, it can go in a `.env` file, which Git ignores.
+
+## Managing gear
+
+The gear list at [toppirl.com/gear](https://toppirl.com/gear) is edited from **`/admin`** ([toppirl.com/admin](https://toppirl.com/admin)), which nothing on the site links to. For now that page only signs you in; the editor comes next.
+
+### Setting the admin password (once)
+
+1. In Netlify, open **Site configuration > Environment variables** and choose **Add a variable**.
+2. Key `ADMIN_PASSWORD`. Tick **Contains secret values**, and give it the **Functions** scope.
+3. Set a value for **Production**, and one for **Deploy Previews** too if you want to sign in on PR previews (they can differ). Use a long passphrase that you don't use anywhere else.
+4. Redeploy (functions only see a changed variable after a deploy). For a PR preview, push a commit or choose **Retry deploy** on it.
+
+Changing the password signs every browser out. Without it, `/admin` says sign-in isn't set up yet. Five wrong passwords from one address lock sign-in there for 15 minutes, and 50 attempts in an hour lock it for everyone for up to an hour.
+
+### What's stored, and where
+
+Everything lives in [Netlify Blobs](https://docs.netlify.com/build/data-and-storage/netlify-blobs/), the site's own storage (browse it in the Netlify UI under **Blobs**), not in the repo:
+
+| Store | Key | What |
+|---|---|---|
+| `gear` | `gear.json` | the list: categories and items in display order, with drafts, a revision number and when it was last saved |
+| `gear` | `img/<id>` | the photos, as uploaded (JPEG, PNG or WebP, 512 KB at most) |
+| `admin` | `signing-key` | signs the sign-in cookie; made on first use |
+| `admin` | `attempts/…` | recent sign-in attempts, for the lockout |
+
+Only the production site uses those stores. Deploy previews, branch deploys and `netlify dev` use **`gear-preview`** and **`admin-preview`** instead, so testing never touches the live list. All previews share that one copy. `netlify dev` keeps its copy on disk under `.netlify/` (Git ignores it).
+
+The public list is cached by Netlify's CDN until a save clears it, so edits show straight away. A photo is deleted when a save leaves it unused.
+
+### Running it locally
+
+Put a made-up password in `.env` (Git ignores it), then run `npx netlify-cli@27.12.1 dev` and open http://localhost:8888/admin:
+
+```
+ADMIN_PASSWORD=any-long-test-password
+```
 
 ## Deploying (Netlify + toppirl.com)
 
