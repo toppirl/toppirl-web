@@ -4,9 +4,9 @@
 [build]
   publish = "public"
 
-# The project was still set to Node 16, which functions no longer support
+# Keep in step with Node.js under Netlify's Build & deploy > Dependency management
 [build.environment]
-  NODE_VERSION = "22"
+  NODE_VERSION = "24"
 
 [functions]
   directory = "netlify/functions"
