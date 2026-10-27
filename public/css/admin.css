@@ -1,0 +1,117 @@
+/* ADMIN (/admin). Loads after style.css and builds on its tokens. */
+
+/* The panels below set display, which would otherwise beat the hidden attribute */
+[hidden] {
+    display: none !important;
+}
+
+.admin-card {
+    margin-top: 2rem;
+    padding: 1.25rem;
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    background-color: var(--card-surface);
+    text-align: left;
+}
+
+/* SIGN IN */
+
+.admin-signin {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-label {
+    font-weight: 600;
+}
+
+.admin-input {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 3rem;
+    margin-top: 0.5rem;
+    padding: 0.625rem 0.875rem;
+    /* Strong enough to see the field's edge (3:1) without the focus color */
+    border: 1px solid var(--card-border-hover);
+    border-radius: 8px;
+    background-color: var(--bg);
+    color: var(--text);
+    /* 1rem or larger stops iOS zooming in on focus */
+    font: inherit;
+    font-size: 1rem;
+}
+
+.admin-input:focus {
+    border-color: var(--accent);
+}
+
+.admin-input[aria-invalid='true'] {
+    border-color: var(--live);
+}
+
+/* Always rendered (empty, it takes no space) so screen readers announce new errors */
+.admin-error {
+    font-size: 0.875rem;
+    color: var(--live-text);
+}
+
+.admin-error:not(:empty) {
+    margin-top: 0.5rem;
+}
+
+.admin-button {
+    min-height: 3rem;
+    margin-top: 1rem;
+    padding: 0.625rem 1.25rem;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    background-color: var(--accent);
+    color: var(--bg);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.admin-button:hover:enabled {
+    border-color: var(--accent-hover);
+    background-color: var(--accent-hover);
+    box-shadow: 0 0 14px var(--card-glow);
+}
+
+.admin-button:disabled {
+    opacity: 0.6;
+    cursor: progress;
+}
+
+.admin-button-quiet {
+    margin-top: 0;
+    border-color: var(--card-border-hover);
+    background-color: transparent;
+    color: var(--accent);
+}
+
+.admin-button-quiet:hover:enabled {
+    border-color: var(--accent);
+    background-color: var(--thumb-tile);
+    color: var(--accent-hover);
+}
+
+/* SIGNED IN */
+
+.admin-session {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1rem;
+    color: var(--text-soft);
+}
+
+/* FOCUS */
+
+.admin-input:focus-visible,
+.admin-button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}

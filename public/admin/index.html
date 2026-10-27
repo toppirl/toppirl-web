@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin · toppirL</title>
+    <!-- Private page: kept out of search results and never linked from the site -->
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#111827">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <script type="module" src="/js/admin.js"></script>
+</head>
+
+<body>
+    <main class="page">
+        <header class="profile">
+            <h1>Admin</h1>
+            <p class="tagline" role="status" data-admin-status>Checking whether you're signed in…</p>
+        </header>
+
+        <!-- Signed out. The CSP blocks native form posts, so js/admin.js sends this with fetch. -->
+        <form class="admin-card admin-signin" method="post" data-signin hidden>
+            <label class="admin-label" for="admin-password">Password</label>
+            <input class="admin-input" id="admin-password" name="password" type="password"
+                autocomplete="current-password" required aria-describedby="admin-error">
+            <p class="admin-error" id="admin-error" role="alert" data-signin-error></p>
+            <button class="admin-button" type="submit">Sign in</button>
+        </form>
+
+        <!-- Signed in. The gear dashboard goes in here. -->
+        <section class="admin-card admin-session" aria-label="Session" data-signed-in hidden>
+            <p>This browser stays signed in for 30 days.</p>
+            <button class="admin-button admin-button-quiet" type="button" data-signout>Sign out</button>
+        </section>
+    </main>
+</body>
+
+</html>
