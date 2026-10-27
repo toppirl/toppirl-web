@@ -3,23 +3,45 @@
 :root {
     --bg: #111827;
     --surface: #1e293b;
-    --surface-hover: #273449;
     --border: #334155;
-    --border-hover: #475569;
     --text: #f8fafc;
     --text-soft: #cbd5e1;
     --text-muted: #94a3b8;
     --accent: #22d3ee;
     --accent-hover: #67e8f9;
     --live: #ef4444;
-    --live-surface: #2a1a22;
-    --live-surface-hover: #35202b;
     --live-text: #fca5a5;
+
+    /* Cards sit on the grid: slightly see-through, with cyan-tinted edges */
+    --card-surface: rgba(30, 41, 59, 0.72);
+    --card-surface-hover: rgba(39, 52, 73, 0.85);
+    --card-border: rgba(34, 211, 238, 0.2);
+    --card-border-hover: rgba(34, 211, 238, 0.55);
+    --card-glow: rgba(34, 211, 238, 0.18);
+    --thumb-tile: rgba(34, 211, 238, 0.1);
+    --live-surface: rgba(42, 26, 34, 0.82);
+    --live-surface-hover: rgba(53, 32, 43, 0.9);
+    --live-glow: rgba(239, 68, 68, 0.28);
+
+    /* Retro grid */
+    --grid-line: rgba(34, 211, 238, 0.22);
+    --grid-horizon: rgba(34, 211, 238, 0.45);
+    --grid-speed: 6s;
+
     --radius: 12px;
     --page-width: 32rem;
 }
 
+/* While streaming, the grid turns red and rolls faster */
+.is-live {
+    --grid-line: rgba(239, 68, 68, 0.42);
+    --grid-horizon: rgba(239, 68, 68, 0.7);
+    --grid-speed: 2.5s;
+}
+
 body {
+    position: relative;
+    min-height: 100vh;
     font-family: 'Poppins', system-ui, sans-serif;
     line-height: 1.5;
     text-align: center;
@@ -29,19 +51,83 @@ body {
 
 /* One centered column: its max width does the work the old breakpoints did */
 .page {
+    position: relative;
+    z-index: 1;
     max-width: var(--page-width);
     margin: 0 auto;
     padding: clamp(3rem, 12vh, 8rem) 1rem 3rem;
 }
 
+/* RETRO GRID BACKGROUND */
+
+.bg-grid {
+    position: absolute;
+    top: var(--horizon, 60vh);
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* The horizon line */
+.bg-grid::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 1px;
+    background-color: var(--grid-horizon);
+    box-shadow: 0 0 12px var(--grid-horizon);
+}
+
+.bg-grid-floor {
+    position: absolute;
+    inset: 0;
+    perspective: 320px;
+    perspective-origin: 50% 0;
+    /* Lines fade in from the horizon so they never crowd the cards */
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 14rem);
+    mask-image: linear-gradient(to bottom, transparent, #000 14rem);
+}
+
+.bg-grid-plane {
+    position: absolute;
+    top: 0;
+    right: -50%;
+    left: -50%;
+    height: 300%;
+    transform: rotateX(72deg);
+    transform-origin: top;
+    background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 44px 44px;
+    animation: grid-roll var(--grid-speed) linear infinite;
+}
+
+@keyframes grid-roll {
+    to {
+        background-position: 0 44px;
+    }
+}
+
 /* PROFILE */
 
-.avatar {
-    display: grid;
-    place-items: center;
+.avatar-wrap {
+    position: relative;
     width: 6rem;
     height: 6rem;
     margin: 0 auto 1.25rem;
+}
+
+.avatar {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
     border: 2px solid var(--border);
     border-radius: 50%;
     background-color: var(--surface);
@@ -49,6 +135,7 @@ body {
     font-weight: 600;
     color: var(--text-soft);
     object-fit: cover;
+    transition: border-color 300ms ease;
 }
 
 h1 {
@@ -85,11 +172,12 @@ h1 {
     height: 3rem;
     border-radius: var(--radius);
     color: var(--accent);
-    transition: background-color 150ms ease, color 150ms ease;
+    transition: background-color 150ms ease, box-shadow 150ms ease, color 150ms ease;
 }
 
 .socials a:hover {
-    background-color: var(--surface);
+    background-color: var(--thumb-tile);
+    box-shadow: 0 0 14px var(--card-glow);
     color: var(--accent-hover);
 }
 
@@ -124,17 +212,20 @@ h1 {
     align-items: center;
     gap: 1rem;
     padding: 0.75rem 1rem 0.75rem 0.75rem;
-    border: 1px solid var(--border);
+    border: 1px solid var(--card-border);
     border-radius: var(--radius);
-    background-color: var(--surface);
+    background-color: var(--card-surface);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
     color: var(--text);
     text-decoration: none;
-    transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
+    transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
 }
 
 .link-card:hover {
-    border-color: var(--border-hover);
-    background-color: var(--surface-hover);
+    border-color: var(--card-border-hover);
+    background-color: var(--card-surface-hover);
+    box-shadow: 0 0 18px var(--card-glow);
     transform: translateY(-1px);
 }
 
@@ -144,8 +235,8 @@ h1 {
     width: 3.5rem;
     height: 3.5rem;
     border-radius: 8px;
-    background-color: var(--border);
-    color: var(--text-soft);
+    background-color: var(--thumb-tile);
+    color: var(--accent);
     object-fit: cover;
 }
 
@@ -182,6 +273,93 @@ h1 {
 
 /* LIVE ON TWITCH */
 
+.is-live .avatar {
+    border-color: var(--live);
+}
+
+/* Two rings that spread out from the avatar while live, a beat apart */
+.avatar-ripple {
+    position: absolute;
+    inset: -4px;
+    border: 2px solid var(--live);
+    border-radius: 50%;
+    opacity: 0;
+}
+
+.is-live .avatar-ripple {
+    animation: ripple 2s ease-out infinite;
+}
+
+.is-live .avatar-ripple + .avatar-ripple {
+    animation-delay: 1s;
+}
+
+@keyframes ripple {
+    from {
+        opacity: 0.7;
+        transform: scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: scale(1.45);
+    }
+}
+
+/* LIVE badge, cut out of the avatar's bottom edge; pops in when the check says live */
+.live-badge {
+    position: absolute;
+    bottom: -0.6rem;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.1rem 0.45rem;
+    border: 2px solid var(--bg);
+    border-radius: 6px;
+    background-color: var(--live);
+    color: #ffffff;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+    opacity: 0;
+    transform: translateX(-50%) scale(0.6);
+    transition: opacity 200ms ease, transform 350ms cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+.is-live .live-badge {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+}
+
+.live-badge-dot {
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 50%;
+    background-color: #ffffff;
+    animation: live-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+    50% {
+        opacity: 0.3;
+    }
+}
+
+/* While live, the whole avatar (badge included) links to the stream */
+.avatar-live-link {
+    position: absolute;
+    inset: -6px -6px -14px;
+    border-radius: 50%;
+}
+
+.live-meta {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--live-text);
+}
+
 .link-card-live,
 .link-card-live:hover {
     border-color: var(--live);
@@ -189,10 +367,12 @@ h1 {
 
 .link-card-live {
     background-color: var(--live-surface);
+    box-shadow: 0 0 18px var(--live-glow);
 }
 
 .link-card-live:hover {
     background-color: var(--live-surface-hover);
+    box-shadow: 0 0 24px var(--live-glow);
 }
 
 .link-card-live .link-thumb {
@@ -213,28 +393,6 @@ h1 {
     overflow: hidden;
 }
 
-.live-dot {
-    display: inline-block;
-    width: 0.5rem;
-    height: 0.5rem;
-    margin-right: 0.5rem;
-    border-radius: 50%;
-    background-color: var(--live);
-    vertical-align: 0.1em;
-    animation: live-pulse 1.6s ease-in-out infinite;
-}
-
-@keyframes live-pulse {
-    50% {
-        opacity: 0.35;
-    }
-}
-
-.is-live .avatar {
-    outline: 3px solid var(--live);
-    outline-offset: 3px;
-}
-
 /* FOCUS AND MOTION */
 
 a:focus-visible {
@@ -242,6 +400,7 @@ a:focus-visible {
     outline-offset: 3px;
 }
 
+/* Still grid, no ripples or pulsing; the red ring and LIVE badge still show */
 @media (prefers-reduced-motion: reduce) {
     * {
         transition: none !important;

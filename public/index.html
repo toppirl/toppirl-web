@@ -29,16 +29,31 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
+    <script type="module" src="js/grid.js"></script>
     <script type="module" src="js/live.js"></script>
 </head>
 
 <body>
+    <!-- Retro grid floor; js/grid.js puts its horizon just above the link cards -->
+    <div class="bg-grid" aria-hidden="true">
+        <div class="bg-grid-floor">
+            <div class="bg-grid-plane"></div>
+        </div>
+    </div>
+
     <main class="page">
         <header class="profile">
-            <!-- Swap for <img class="avatar" src="img/avatar.jpg" alt="" width="96" height="96"> once there's a photo -->
-            <div class="avatar" aria-hidden="true">JT</div>
+            <div class="avatar-wrap">
+                <span class="avatar-ripple" aria-hidden="true"></span>
+                <span class="avatar-ripple" aria-hidden="true"></span>
+                <!-- Swap for <img class="avatar" src="img/avatar.jpg" alt="" width="96" height="96"> once there's a photo -->
+                <div class="avatar" aria-hidden="true">JT</div>
+                <span class="live-badge" aria-hidden="true"><span class="live-badge-dot"></span>LIVE</span>
+                <a class="avatar-live-link" href="https://twitch.tv/toppirl" target="_blank" rel="noopener noreferrer" aria-label="Live on Twitch now" data-live hidden></a>
+            </div>
             <h1>Jordan Topp</h1>
             <p class="handle">@toppirL</p>
+            <p class="live-meta" data-live data-live-meta hidden></p>
             <p class="tagline">Software Engineer 💻 | Gaming Extraordinaire 🎮</p>
         </header>
 
@@ -138,7 +153,7 @@
                         </svg>
                     </span>
                     <span class="link-text">
-                        <span class="link-title"><span class="live-dot" aria-hidden="true"></span>Live now on Twitch</span>
+                        <span class="link-title">Watch on Twitch</span>
                         <span class="link-subtitle" data-live-detail>Come hang out</span>
                     </span>
                     <svg class="link-arrow icon-line" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
