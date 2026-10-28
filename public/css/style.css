@@ -86,8 +86,8 @@ body {
     transform: translateX(-50%);
 }
 
-/* The horizon line */
-.bg-grid::before {
+/* The horizon line, drawn after the floor so its fade can't cover it */
+.bg-grid::after {
     content: '';
     position: absolute;
     top: 0;
@@ -103,19 +103,39 @@ body {
     inset: 0;
     perspective: 320px;
     perspective-origin: 50% 0;
-    /* Lines fade in from the horizon so they never crowd the cards */
-    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 14rem);
-    mask-image: linear-gradient(to bottom, transparent, #000 14rem);
 }
 
+/* Lines fade in from the horizon so they never crowd the cards. This is a page-colored
+   overlay rather than mask-image, which iOS Safari can leave unpainted over a 3D layer. */
+.bg-grid-floor::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(var(--bg), transparent 14rem);
+}
+
+/* The tilted floor. Its near edge stops just in front of the viewer (perspective ÷ sin 72°
+   is about 336px), because a plane that reaches behind the viewer can render blank on
+   iOS Safari. It still reaches well past the bottom of any screen. */
 .bg-grid-plane {
     position: absolute;
     top: 0;
     right: -50%;
     left: -50%;
-    height: 300%;
+    height: 320px;
+    overflow: hidden;
     transform: rotateX(72deg);
     transform-origin: top;
+}
+
+/* The lines: one tile taller than the floor, so the loop never shows a gap */
+.bg-grid-plane::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: calc(100% + 44px);
     background-image:
         linear-gradient(var(--grid-line) 1px, transparent 1px),
         linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
@@ -124,16 +144,15 @@ body {
     will-change: transform;
 }
 
-/* Slides the tilted plane one tile toward the viewer and loops. Only transform changes,
-   so the compositor moves it without repainting. The tile that starts behind the
-   horizon is clipped by .bg-grid. */
+/* Slides the lines one tile toward the viewer and loops. Only transform changes, so the
+   compositor moves them without repainting; the floor clips the extra tile. */
 @keyframes grid-roll {
     from {
-        transform: rotateX(72deg) translateY(-44px);
+        transform: translateY(-44px);
     }
 
     to {
-        transform: rotateX(72deg) translateY(0);
+        transform: translateY(0);
     }
 }
 
@@ -563,7 +582,9 @@ a:focus-visible {
 
 /* Still grid, no ripples or pulsing; the red ring and LIVE badge still show */
 @media (prefers-reduced-motion: reduce) {
-    * {
+    *,
+    ::before,
+    ::after {
         transition: none !important;
         animation: none !important;
     }
