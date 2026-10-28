@@ -1,18 +1,32 @@
 // Sign-in for /admin. The CSP blocks native form posts, so the form goes through fetch.
 // The session itself is an HttpOnly cookie this script never sees; /api/admin/session
-// says whether it's valid.
+// says whether it's valid. Signed in, the page is the gear dashboard (js/admin-gear.js).
+import { closeDashboard, openDashboard, saveBeforeSignOut } from './admin-gear.js';
+
 const status = document.querySelector('[data-admin-status]');
 const form = document.querySelector('[data-signin]');
 const password = form.elements.password;
 const signInButton = form.querySelector('[type="submit"]');
 const error = document.querySelector('[data-signin-error]');
 const sessionPanel = document.querySelector('[data-signed-in]');
+const dashboardHeading = document.querySelector('[data-board-heading]');
 const signOutButton = document.querySelector('[data-signout]');
 
 function render(signedIn) {
     form.hidden = signedIn;
     sessionPanel.hidden = !signedIn;
-    status.textContent = signedIn ? 'Signed in' : 'Enter the password to continue.';
+    status.textContent = signedIn ? 'Signed in. Changes save as you go.' : 'Enter the password to continue.';
+    if (signedIn) openDashboard({ onSignedOut: sessionEnded });
+}
+
+// The session ran out (or the password changed) while the dashboard was open. An edit
+// that couldn't save is kept, and goes once signed in again.
+function sessionEnded(unsaved) {
+    render(false);
+    showError(unsaved
+        ? "You've been signed out, so your last change isn't saved yet. Sign in again to save it."
+        : "You've been signed out. Sign in again to carry on.");
+    password.focus();
 }
 
 // `wrongPassword` marks the field invalid; other errors aren't the field's fault
@@ -69,8 +83,9 @@ form.addEventListener('submit', async (event) => {
 
     if (res?.status === 204) {
         form.reset();
+        showError('');
         render(true);
-        signOutButton.focus();
+        dashboardHeading.focus();
         return;
     }
 
@@ -89,6 +104,20 @@ form.addEventListener('submit', async (event) => {
 
 signOutButton.addEventListener('click', async () => {
     signOutButton.disabled = true;
+    // Whatever's waiting to save goes first, so signing out never drops an edit
+    const saved = await saveBeforeSignOut();
+    if (sessionPanel.hidden) {
+        // The session had already ended: sessionEnded has shown the sign-in form
+        signOutButton.disabled = false;
+        return;
+    }
+    if (!saved) {
+        signOutButton.disabled = false;
+        status.textContent = "Still signed in: your last change hasn't saved yet. Try again.";
+        signOutButton.focus();
+        return;
+    }
+
     let signedOut = false;
     try {
         signedOut = (await fetch('/api/admin/logout', { method: 'POST' })).ok;
@@ -98,6 +127,7 @@ signOutButton.addEventListener('click', async () => {
     signOutButton.disabled = false;
 
     if (signedOut) {
+        closeDashboard();
         showError('');
         render(false);
         password.focus();

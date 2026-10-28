@@ -15,7 +15,11 @@ public/                  everything that gets published
   js/live.js             checks Twitch every minute and switches the page into live mode
                          (red grid, LIVE badge, uptime line, Watch on Twitch card)
   js/gear.js             loads /api/gear and draws the gear page's cards (or its empty or error message)
-  admin/index.html       /admin: sign-in, not linked from the site (with js/admin.js, css/admin.css)
+  admin/index.html       /admin: sign-in and the gear dashboard, not linked from the site
+  js/admin.js            /admin's sign-in and sign-out; signed in, it opens the dashboard
+  js/admin-gear.js       the gear dashboard, with admin-save.js (saves as you go), admin-photo.js
+                         (shrinks photos), admin-rules.js (checks fields) and admin-api.js
+  css/admin.css          /admin's styles, on top of style.css
   img/                   favicons, apple-touch-icon, og-image (link previews)
 netlify/functions/
   twitch-live.mjs        /api/twitch-live: asks Twitch if I'm streaming
@@ -50,7 +54,23 @@ Never put the secret in the repo. For `netlify dev`, it can go in a `.env` file,
 
 ## Managing gear
 
-The gear list at [toppirl.com/gear](https://toppirl.com/gear) is edited from **`/admin`** ([toppirl.com/admin](https://toppirl.com/admin)), which nothing on the site links to. For now that page only signs you in; the editor comes next.
+The gear list at [toppirl.com/gear](https://toppirl.com/gear) is edited from **`/admin`** ([toppirl.com/admin](https://toppirl.com/admin)), which nothing on the site links to. Sign in, and the page becomes the gear dashboard.
+
+### Using the dashboard
+
+There's no Save button: every change saves on its own, and the bar at the top of the screen says how that's going (**Saving…**, **All changes saved**, or what went wrong, with a **Retry** button). Typing saves once you pause for a second or leave the field. If you try to close the tab before something has saved, the browser asks first.
+
+- **Categories** are the groups on `/gear`, in the same order. Type in a category's name to rename it; the arrows move it up or down. Use **New category** at the bottom to add one (up to 30). A category that still has gear in it can only be deleted by moving that gear to another category, which the delete button offers.
+- **Gear:** **Add gear** under a category opens a form for the name, link, store (like Amazon), a short note and a photo. **Edit** on a card opens the same fields, plus a menu to move it to another category and **Delete this gear**. The arrows reorder gear within its category. Up to 300 items.
+- **Drafts:** untick **On /gear** to hide something while you work on it. It stays in the dashboard, marked Draft, and never reaches the public page.
+- **Links** must be full `https://` addresses; anything else is flagged under the field and isn't saved until it's fixed.
+- **Photos:** JPEG, PNG or WebP, any size up to 25 MB. The browser crops it to a square (the shape `/gear` shows) and shrinks it to 512px before uploading, so a phone photo is fine as it is. **Replace photo** and **Remove photo** do what they say.
+- **Undo:** deleting gear or a category, or removing a photo, shows an **Undo** button at the top until your next delete.
+- **Download JSON** saves a copy of the whole list, drafts included, in the same shape it's stored in.
+
+Editing in two tabs (or on the phone and the computer at once) is safe: if the other one saved first, the dashboard loads its version and says your last change didn't save, so you can make it again. Coming back to a tab also picks up anything saved elsewhere.
+
+On deploy previews and `netlify dev`, a **Preview** banner at the top is a reminder that you're editing the test copy of the list, not the live site's (see below).
 
 ### Setting the admin password (once)
 
