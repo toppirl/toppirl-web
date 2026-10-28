@@ -434,6 +434,145 @@ h1 {
     overflow: hidden;
 }
 
+/* GEAR PAGE */
+
+/* A smaller header than the homepage's, so the list starts higher */
+.page-gear {
+    /* One line of category heading: 0.75rem text */
+    --gear-heading-height: 1.125rem;
+    padding-top: clamp(1.5rem, 6vh, 3rem);
+}
+
+/* The first category's heading sits above the horizon (see .gear-group:first-child),
+   so the floor leaves room for it */
+.page-gear .floor {
+    display: flex;
+    flex-direction: column;
+    margin-top: calc(1.75rem + var(--gear-heading-height) + 2 * var(--card-gap));
+}
+
+/* No headings while a loading, empty or error message shows: same spacing as the homepage */
+.page-gear .floor:has(.gear-status) {
+    margin-top: 2rem;
+}
+
+.back-link {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    width: fit-content;
+    margin-bottom: 1.5rem;
+    padding: 0.375rem 0.75rem 0.375rem 0.5rem;
+    border-radius: 999px;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: background-color 150ms ease, color 150ms ease;
+}
+
+.back-link svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.back-link:hover {
+    background-color: var(--thumb-tile);
+    color: var(--accent-hover);
+}
+
+.avatar-wrap-small {
+    width: 4rem;
+    height: 4rem;
+    margin-bottom: 1rem;
+}
+
+.avatar-wrap-small .avatar {
+    font-size: 1.25rem;
+}
+
+.gear {
+    position: relative;
+}
+
+.gear-group + .gear-group {
+    margin-top: 2rem;
+}
+
+.gear-heading {
+    margin-bottom: var(--card-gap);
+    padding: 0 0.25rem;
+    overflow: hidden;
+    color: var(--text-soft);
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: var(--gear-heading-height);
+    letter-spacing: 0.12em;
+    text-align: left;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+/* The first heading hangs above the horizon, out of the flow, so the first card
+   sits one card-gap below the horizon exactly as on the homepage */
+.gear-group:first-child {
+    position: relative;
+}
+
+.gear-group:first-child .gear-heading {
+    position: absolute;
+    right: 0;
+    bottom: 100%;
+    left: 0;
+    margin-bottom: calc(2 * var(--card-gap));
+}
+
+/* Store and note under the gear's name; a long note wraps under the store label */
+.gear-meta {
+    overflow-wrap: anywhere;
+}
+
+/* Where the link goes, e.g. Amazon. No overflow clipping: that would move its
+   baseline to the bottom edge and lift it off the note's line. */
+.gear-store {
+    display: inline-block;
+    max-width: 100%;
+    margin-right: 0.375rem;
+    padding: 0 0.375rem;
+    box-sizing: border-box;
+    border: 1px solid var(--card-border);
+    border-radius: 4px;
+    background-color: var(--thumb-tile);
+    color: var(--accent);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    line-height: 1.5;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+/* Loading, empty and error messages, in a card where the first gear card would be */
+.gear-status {
+    padding: 1.25rem 1rem;
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    background-color: var(--card-surface);
+    text-wrap: balance;
+}
+
+.gear-status-title {
+    font-weight: 600;
+}
+
+.gear-footer {
+    position: relative;
+    margin-top: auto;
+    padding-top: 2.5rem;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    text-wrap: balance;
+}
+
 /* FOCUS AND MOTION */
 
 a:focus-visible {

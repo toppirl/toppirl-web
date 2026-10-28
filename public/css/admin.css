@@ -1,0 +1,651 @@
+/* ADMIN (/admin). Loads after style.css and builds on its tokens. */
+
+/* Native controls (checkboxes, selects, their menus) drawn dark to match */
+:root {
+    color-scheme: dark;
+}
+
+/* The panels below set display, which would otherwise beat the hidden attribute */
+[hidden] {
+    display: none !important;
+}
+
+/* A little wider than the link pages, and starting higher, to leave room for the editor */
+.page-admin {
+    --page-width: 36rem;
+    padding-top: clamp(1.5rem, 6vh, 3rem);
+}
+
+/* Read out by screen readers, but not shown */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.admin-card {
+    margin-top: 2rem;
+    padding: 1.25rem;
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    background-color: var(--card-surface);
+    text-align: left;
+}
+
+/* SIGN IN */
+
+.admin-signin {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-label {
+    font-weight: 600;
+}
+
+.admin-input {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 3rem;
+    margin-top: 0.5rem;
+    padding: 0.625rem 0.875rem;
+    /* Strong enough to see the field's edge (3:1) without the focus color */
+    border: 1px solid var(--card-border-hover);
+    border-radius: 8px;
+    background-color: var(--bg);
+    color: var(--text);
+    /* 1rem or larger stops iOS zooming in on focus */
+    font: inherit;
+    font-size: 1rem;
+}
+
+.admin-input:focus {
+    border-color: var(--accent);
+}
+
+.admin-input[aria-invalid='true'] {
+    border-color: var(--live);
+}
+
+/* Always rendered (empty, it takes no space) so screen readers announce new errors */
+.admin-error {
+    font-size: 0.875rem;
+    color: var(--live-text);
+}
+
+.admin-error:not(:empty) {
+    margin-top: 0.5rem;
+}
+
+.admin-button {
+    min-height: 3rem;
+    margin-top: 1rem;
+    padding: 0.625rem 1.25rem;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    background-color: var(--accent);
+    color: var(--bg);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.admin-button:hover:enabled {
+    border-color: var(--accent-hover);
+    background-color: var(--accent-hover);
+    box-shadow: 0 0 14px var(--card-glow);
+}
+
+.admin-button:disabled {
+    opacity: 0.6;
+    cursor: progress;
+}
+
+.admin-button-quiet {
+    margin-top: 0;
+    border-color: var(--card-border-hover);
+    background-color: transparent;
+    color: var(--accent);
+}
+
+.admin-button-quiet:hover:enabled {
+    border-color: var(--accent);
+    background-color: var(--thumb-tile);
+    color: var(--accent-hover);
+}
+
+/* For buttons that sit in a row with others */
+.admin-button-small {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    min-height: 2.75rem;
+    margin-top: 0;
+    padding: 0.375rem 0.875rem;
+    font-size: 0.875rem;
+}
+
+.admin-button-small svg {
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+}
+
+.admin-button-danger {
+    border-color: color-mix(in srgb, var(--live) 60%, transparent);
+    background-color: transparent;
+    color: var(--live-text);
+}
+
+.admin-button-danger:hover:enabled {
+    border-color: var(--live);
+    background-color: var(--live-surface);
+    box-shadow: 0 0 14px var(--live-glow);
+}
+
+.admin-button[aria-disabled='true'] {
+    opacity: 0.6;
+    cursor: progress;
+}
+
+/* Square buttons for moving and deleting; 44px, a comfortable tap */
+.admin-icon-button {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    background-color: transparent;
+    color: var(--accent);
+    cursor: pointer;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.admin-icon-button svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.admin-icon-button:hover:not([aria-disabled='true']) {
+    border-color: var(--accent);
+    background-color: var(--thumb-tile);
+    color: var(--accent-hover);
+}
+
+.admin-icon-button-danger {
+    color: var(--live-text);
+}
+
+.admin-icon-button-danger:hover:not([aria-disabled='true']) {
+    border-color: var(--live);
+    background-color: var(--live-surface);
+    color: var(--live-text);
+}
+
+/* Still focusable, so focus stays put when an item reaches the end */
+.admin-icon-button[aria-disabled='true'] {
+    color: var(--text-muted);
+    opacity: 0.45;
+    cursor: default;
+}
+
+.admin-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.admin-row > .admin-input {
+    flex: 1;
+    min-width: 0;
+    margin-top: 0;
+}
+
+/* SIGNED IN */
+
+.admin-dashboard {
+    margin-top: 1.5rem;
+    text-align: left;
+}
+
+.admin-session {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1rem;
+    color: var(--text-soft);
+}
+
+.admin-session .admin-row {
+    gap: 0.5rem;
+}
+
+/* Shown when this deploy edits the preview copy of the list */
+.admin-preview {
+    margin-bottom: 0.75rem;
+    padding: 0.75rem 1rem;
+    border: 1px dashed var(--card-border-hover);
+    border-radius: var(--radius);
+    background-color: var(--thumb-tile);
+    color: var(--text-soft);
+    font-size: 0.875rem;
+}
+
+.admin-preview .admin-badge {
+    margin-right: 0.375rem;
+    border-color: var(--card-border-hover);
+    color: var(--accent);
+}
+
+/* SAVE STATUS AND UNDO */
+
+/* Floats at the top of the screen while the list scrolls under it */
+.admin-sticky {
+    position: sticky;
+    top: 0.5rem;
+    z-index: 2;
+}
+
+.admin-bar,
+.admin-undo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 3rem;
+    box-sizing: border-box;
+    padding: 0.25rem 0.25rem 0.25rem 1rem;
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    background-color: var(--surface);
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--bg) 80%, transparent);
+    font-size: 0.875rem;
+}
+
+.admin-undo {
+    margin-top: 0.375rem;
+    border-color: var(--card-border-hover);
+}
+
+.admin-status,
+.admin-undo p {
+    flex: 1;
+    min-width: 0;
+    padding: 0.5rem 0;
+    overflow-wrap: anywhere;
+}
+
+.admin-status {
+    display: flex;
+    align-items: baseline;
+    gap: 0.625rem;
+    color: var(--text-soft);
+}
+
+/* The dot: cyan when saved, grey and pulsing while saving, red when it didn't work */
+.admin-status::before {
+    content: '';
+    flex: none;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background-color: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    transform: translateY(-0.0625rem);
+}
+
+.admin-bar.is-busy .admin-status::before {
+    background-color: var(--text-muted);
+    box-shadow: none;
+    animation: live-pulse 1.4s ease-in-out infinite;
+}
+
+.admin-bar.is-warn .admin-status::before {
+    background-color: transparent;
+    box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.admin-bar.is-error {
+    border-color: var(--live);
+    background-color: var(--live-surface);
+}
+
+.admin-bar.is-error .admin-status {
+    color: var(--live-text);
+}
+
+.admin-bar.is-error .admin-status::before {
+    background-color: var(--live);
+    box-shadow: 0 0 8px var(--live-glow);
+}
+
+/* BOARD */
+
+.admin-heading-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    margin-top: 1.5rem;
+}
+
+.admin-heading {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+/* Only ever focused from script (after signing in, or when a status button goes) */
+.admin-heading:focus {
+    outline: none;
+}
+
+.admin-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--accent);
+    font-size: 0.875rem;
+    text-decoration: none;
+}
+
+.admin-link svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.admin-link:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+}
+
+/* The loading, empty and error card from the gear page, at the top of the board */
+.admin-board > .gear-status {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.admin-board > .gear-status .admin-button {
+    margin-top: 1rem;
+}
+
+.admin-category {
+    margin-top: 1.75rem;
+}
+
+/* Small capitals, like the gear page's category headings */
+.admin-kicker {
+    padding: 0 0.25rem;
+    color: var(--text-soft);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.admin-category .admin-row {
+    flex-wrap: nowrap;
+    margin-top: 0.375rem;
+}
+
+/* The category's name reads as its heading */
+.admin-category-name {
+    font-weight: 600;
+}
+
+.admin-items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--card-gap);
+    margin-top: var(--card-gap);
+}
+
+/* Each piece of gear: the gear page's card, with its controls underneath */
+.admin-item {
+    padding: 0.75rem;
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    background-color: var(--card-surface);
+}
+
+.admin-item.is-draft {
+    border-style: dashed;
+}
+
+.admin-item.is-draft .link-thumb {
+    opacity: 0.5;
+}
+
+.admin-item-summary {
+    display: grid;
+    grid-template-columns: 3.5rem minmax(0, 1fr);
+    align-items: center;
+    gap: 0.875rem;
+}
+
+.admin-item-text {
+    display: block;
+}
+
+.admin-item-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.375rem;
+    margin-top: 0.75rem;
+}
+
+.admin-item-actions .admin-check {
+    margin-left: auto;
+}
+
+.admin-badge {
+    display: inline-block;
+    margin-bottom: 0.25rem;
+    padding: 0 0.375rem;
+    border: 1px dashed var(--text-muted);
+    border-radius: 4px;
+    color: var(--text-soft);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    line-height: 1.5;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.admin-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0 0.625rem;
+    border-radius: 8px;
+    color: var(--text-soft);
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+.admin-check:hover {
+    background-color: var(--thumb-tile);
+}
+
+.admin-check input {
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+.admin-edit svg {
+    transition: transform 150ms ease;
+}
+
+.admin-edit[aria-expanded='true'] svg {
+    transform: rotate(180deg);
+}
+
+.admin-empty {
+    margin-top: var(--card-gap);
+    padding: 1rem;
+    border: 1px dashed var(--card-border);
+    border-radius: var(--radius);
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    text-align: center;
+}
+
+.admin-add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    min-height: 3rem;
+    margin-top: var(--card-gap);
+    border: 1px dashed var(--card-border-hover);
+    border-radius: var(--radius);
+    background-color: transparent;
+    color: var(--accent);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.admin-add svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.admin-add:hover {
+    border-style: solid;
+    background-color: var(--thumb-tile);
+}
+
+/* EDITING */
+
+.admin-editor,
+.admin-new-item {
+    display: grid;
+    gap: 1rem;
+}
+
+.admin-editor {
+    margin-top: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--card-border);
+}
+
+.admin-editor > .admin-button-danger {
+    justify-self: start;
+}
+
+.admin-new-item {
+    margin-top: var(--card-gap);
+    padding: 1rem;
+    border: 1px solid var(--card-border-hover);
+    border-radius: var(--radius);
+    background-color: var(--card-surface);
+    box-shadow: 0 0 18px var(--card-glow);
+}
+
+.admin-form-title {
+    font-weight: 600;
+}
+
+.admin-form-actions {
+    gap: 0.5rem;
+}
+
+.admin-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-hint {
+    margin-top: 0.375rem;
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+}
+
+.admin-select {
+    cursor: pointer;
+}
+
+.admin-photo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+/* An uploaded photo, the icon tile, or the canvas a new photo is drawn on */
+.admin-photo-preview {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 5rem;
+    height: 5rem;
+    border-radius: 8px;
+    background-color: var(--thumb-tile);
+    color: var(--accent);
+    object-fit: cover;
+}
+
+.admin-photo-preview svg {
+    width: 1.75rem;
+    height: 1.75rem;
+}
+
+.admin-photo-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.admin-photo + .admin-error:not(:empty),
+.admin-photo + .admin-hint {
+    margin-top: 0.5rem;
+}
+
+/* Deleting a category that still has gear */
+.admin-confirm {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+    padding: 0.875rem 1rem;
+    border: 1px solid var(--live);
+    border-radius: var(--radius);
+    background-color: var(--live-surface);
+    color: var(--text-soft);
+}
+
+.admin-confirm .admin-input {
+    margin-top: 0;
+}
+
+.admin-new-category {
+    margin-top: 2.25rem;
+}
+
+/* FOCUS */
+
+.admin-input:focus-visible,
+.admin-button:focus-visible,
+.admin-icon-button:focus-visible,
+.admin-add:focus-visible,
+.admin-check input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}

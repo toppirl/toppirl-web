@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin · toppirL</title>
+    <!-- Private page: kept out of search results and never linked from the site -->
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#111827">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <script type="module" src="/js/admin.js"></script>
+</head>
+
+<body>
+    <main class="page page-admin">
+        <header class="profile">
+            <h1>Admin</h1>
+            <p class="tagline" role="status" data-admin-status>Checking whether you're signed in…</p>
+        </header>
+
+        <!-- Signed out. The CSP blocks native form posts, so js/admin.js sends this with fetch. -->
+        <form class="admin-card admin-signin" method="post" data-signin hidden>
+            <label class="admin-label" for="admin-password">Password</label>
+            <input class="admin-input" id="admin-password" name="password" type="password"
+                autocomplete="current-password" required aria-describedby="admin-error">
+            <p class="admin-error" id="admin-error" role="alert" data-signin-error></p>
+            <button class="admin-button" type="submit">Sign in</button>
+        </form>
+
+        <!-- Signed in: the gear dashboard. js/admin-gear.js builds the list into [data-board]
+             and saves as you go, so there's no Save button. -->
+        <div class="admin-dashboard" data-signed-in hidden>
+            <p class="admin-preview" data-preview hidden>
+                <span class="admin-badge">Preview</span>
+                This deploy edits a test copy of the gear list, not the live site's.
+            </p>
+
+            <!-- Stays at the top of the screen while you scroll -->
+            <div class="admin-sticky">
+                <div class="admin-bar" data-save-bar hidden>
+                    <p class="admin-status" role="status" data-save-status></p>
+                    <button class="admin-button admin-button-small" type="button" data-save-action hidden></button>
+                </div>
+                <div class="admin-undo" data-undo hidden>
+                    <p id="admin-undo-message" data-undo-message></p>
+                    <button class="admin-button admin-button-quiet admin-button-small" type="button"
+                        aria-describedby="admin-undo-message" data-key="undo" data-undo-button>Undo</button>
+                    <button class="admin-icon-button" type="button" aria-label="Dismiss" data-undo-dismiss>
+                        <svg class="icon-line" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M18 6 6 18" />
+                            <path d="m6 6 12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="admin-heading-row">
+                <h2 class="admin-heading" tabindex="-1" data-board-heading>My gear</h2>
+                <a class="admin-link" href="/gear" target="_blank" rel="noopener">
+                    See /gear<span class="visually-hidden"> (opens in a new tab)</span>
+                    <svg class="icon-line" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M14 4h6v6" />
+                        <path d="M20 4 10 14" />
+                        <path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
+                    </svg>
+                </a>
+            </div>
+            <div class="admin-board" data-board></div>
+
+            <section class="admin-card admin-session" aria-label="Session">
+                <p>This browser stays signed in for 30 days.</p>
+                <div class="admin-row">
+                    <button class="admin-button admin-button-quiet admin-button-small" type="button" data-export disabled>Download JSON</button>
+                    <button class="admin-button admin-button-quiet admin-button-small" type="button" data-signout>Sign out</button>
+                </div>
+            </section>
+
+            <p class="visually-hidden" aria-live="polite" data-announce></p>
+        </div>
+    </main>
+</body>
+
+</html>
